@@ -58,7 +58,7 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
           lyrics: item.lyrics || ''
         };
       }
-      return { chords: '', lyrics: item.string || '' };
+      return { chords: '', lyrics: (item as any).string || item.toString() || '' };
     }).filter(i => !i.lyrics.includes('{sot}') && !i.lyrics.includes('{eot}'));
 
     let type: 'lyric' | 'chord' | 'empty' | 'tab' = 'lyric';
