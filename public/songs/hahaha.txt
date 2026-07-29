@@ -1,0 +1,21 @@
+{title: afacas}
+{artist: ajfjasf}
+{key: C}
+{tempo: 90}
+{time: 4/4}
+{strumming: D D U U D U}
+
+# --- TABS ---
+# Add your tabs between the {sot} and {eot} tags
+# You can name a tab block by adding a colon and name like this: {sot: Intro Riff}
+{sot: Intro Riff}
+A|----------------------|
+E|----------------------|
+C|----------------------|
+G|----------------------|
+{eot}
+
+# --- LYRICS & CHORDS ---
+# Add your chords in brackets, like [C] or [G]
+[C]Your lyrics go [G]here...
+sjpsdo maji j0isjoij o voo ofzooboijjoojozjbozlmL
