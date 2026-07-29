@@ -1,0 +1,21 @@
+{title: Ek Hasina thi Intro }
+{artist: Kishore Kumar}
+# --- TABS ---
+# Add your tabs between the {sot} and {eot} tags
+# You can name a tab block by adding a colon and name like this: {sot: Intro Riff}
+{sot: Verse 1}
+A|-5-3-5-5/6--5-3-5-5/6--5-3-5-5/6-3--|
+E|----------------------|
+C|----------------------|
+G|----------------------|
+{eot}
+
+{sot: Verse 2}
+A|--3--3-0-3-3/5-2--2-3-5-3/3-3--|
+E|----------------------|
+C|----------------------|
+G|----------------------|
+{eot}
+
+# --- LYRICS & CHORDS ---
+# Add your chords in brackets, like [C]
