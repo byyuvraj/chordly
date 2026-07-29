@@ -1,4 +1,4 @@
-we {title: Dil Ko Tumse}
+{title: Dil Ko Tumse}
 {artist: R.D. Burman}
 {key: C}
 {tempo: 90}
