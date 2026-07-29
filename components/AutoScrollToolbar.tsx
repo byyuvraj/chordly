@@ -30,7 +30,6 @@ export function AutoScrollToolbar({
   setTextSize,
   transposeStep,
   increaseTranspose,
-  increaseTranspose,
   decreaseTranspose,
   tempo
 }: AutoScrollToolbarProps) {
