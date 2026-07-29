@@ -158,7 +158,7 @@ export default function SongViewer({ params }: { params: Promise<{ id: string }>
                     {line.tabLabel || "Tablature"}
                   </div>
                   <div className="bg-black/30 border border-white/5 rounded-xl p-4 overflow-x-auto scrollbar-hide shadow-inner">
-                    <pre className="font-mono text-[0.85em] leading-relaxed text-foreground/90">
+                    <pre className="font-mono text-[0.95em] leading-relaxed text-foreground/90">
                       {line.items.map(item => item.lyrics).join('')}
                     </pre>
                   </div>
