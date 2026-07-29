@@ -11,7 +11,6 @@ export const metadata: Metadata = {
   title: "Chordly - Ukulele Chord Book",
   description: "A high-performance, ad-free, personal Ukulele Chord Book Web App.",
   themeColor: "#0D0D0E",
-  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
