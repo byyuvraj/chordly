@@ -82,7 +82,7 @@ export default function Home() {
       <header className="py-8">
         <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">Chordly</h1>
         <p className="text-secondary text-lg">
-          <a href="https://yuvrajs.me" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline decoration-accent/50 underline-offset-4">
+          <a href="https://yuvrajs.me" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline decoration-accent underline-offset-4 transition-colors">
             Yuvraj's
           </a> personal ukulele chord book.
         </p>
