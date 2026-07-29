@@ -91,29 +91,29 @@ export default function AdminDashboard() {
         <div className="text-secondary">Loading songs...</div>
       ) : (
         <div className="bg-black/20 border border-white/5 rounded-2xl overflow-x-auto">
-          <table className="w-full text-left min-w-[600px]">
+          <table className="w-full text-left sm:min-w-[600px]">
             <thead className="bg-black/40 text-secondary text-sm uppercase tracking-wider">
               <tr>
-                <th className="px-6 py-4 font-medium">Song</th>
-                <th className="px-6 py-4 font-medium">Artist</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-4 sm:px-6 py-4 font-medium">Song</th>
+                <th className="hidden sm:table-cell px-6 py-4 font-medium">Artist</th>
+                <th className="px-4 sm:px-6 py-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {filteredSongs.map((song) => (
                 <tr key={song.id} className="hover:bg-white/5 transition-colors group">
-                  <td className="px-6 py-4">
+                  <td className="px-4 sm:px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-accent">
+                      <div className="w-10 h-10 shrink-0 rounded-xl bg-white/5 flex items-center justify-center text-accent">
                         <FileText size={18} />
                       </div>
-                      <span className="font-medium text-lg">{song.title}</span>
+                      <span className="font-medium text-base sm:text-lg truncate max-w-[150px] sm:max-w-xs">{song.title}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-secondary">
+                  <td className="hidden sm:table-cell px-6 py-4 text-secondary">
                     {song.artist}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 sm:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 transition-opacity">
                       <Link 
                         href={`/admin/edit/${song.id}`}
