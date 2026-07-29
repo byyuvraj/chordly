@@ -70,7 +70,7 @@ export default function AdminDashboard() {
                     {song.artist}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-end gap-2 transition-opacity">
                       <Link 
                         href={`/admin/edit/${song.id}`}
                         className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 text-secondary hover:text-white transition-colors"
