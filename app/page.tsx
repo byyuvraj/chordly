@@ -81,7 +81,11 @@ export default function Home() {
     <main className="flex-1 max-w-3xl w-full mx-auto p-4 pb-32">
       <header className="py-8">
         <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">Chordly</h1>
-        <p className="text-secondary text-lg">Your personal ukulele chord book.</p>
+        <p className="text-secondary text-lg">
+          <a href="https://yuvrajs.me" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline decoration-accent/50 underline-offset-4">
+            Yuvraj's
+          </a> personal ukulele chord book.
+        </p>
       </header>
 
       <div className="relative mb-8">
