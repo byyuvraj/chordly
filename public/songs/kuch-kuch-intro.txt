@@ -1,0 +1,22 @@
+{title: Kuch Kuch Hota Hai Intro}
+{artist: Udit Narayan}
+# --- TABS ---
+# Add your tabs between the {sot} and {eot} tags
+# You can name a tab block by adding a colon and name like this: {sot: Intro Riff}
+{sot: Intro }
+A|--3-4-3h4p3------3--3-4-3h4p3------3--|
+E|------------6-4---------------6-4----|
+C|----------------------|
+G|----------------------|
+{eot}
+
+{sot: Intro }
+A|----3------------------|
+E|--6---6-4-3-6---6-4-6-4-4--4--|
+C|--------------3--------|
+G|-----------------------|
+{eot}
+
+# --- LYRICS & CHORDS ---
+# Add your chords in brackets, like [C] or [G]
+[C]Your lyrics go [G]here...
