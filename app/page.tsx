@@ -11,9 +11,8 @@ interface SongMeta {
   title: string;
   artist: string;
   key: string;
-  tags?: string[];
   file?: string;
-  content?: string; // For custom songs
+  content?: string; // Lyrics/chords text
 }
 
 export default function Home() {
@@ -26,9 +25,25 @@ export default function Home() {
       const res = await fetch('/songs/index.json');
       const staticSongs = await res.json();
       
-      const customSongs = JSON.parse(localStorage.getItem('customSongs') || '[]');
+      // Fetch text content for all static songs in parallel to enable lyrics search
+      const populatedSongs = await Promise.all(
+        staticSongs.map(async (song: SongMeta) => {
+          if (song.file) {
+            try {
+              const textRes = await fetch(`/songs/${song.file}`);
+              if (textRes.ok) {
+                song.content = await textRes.text();
+              }
+            } catch (e) {
+              // Ignore failure, we just won't be able to search lyrics for this song
+            }
+          }
+          return song;
+        })
+      );
       
-      setSongs([...staticSongs, ...customSongs]);
+      const customSongs = JSON.parse(localStorage.getItem('customSongs') || '[]');
+      setSongs([...populatedSongs, ...customSongs]);
     } catch (error) {
       console.error("Failed to load songs", error);
     }
@@ -38,12 +53,26 @@ export default function Home() {
     loadSongs();
   }, []);
 
-  const filteredSongs = songs.filter(s => {
-    const q = search.toLowerCase();
-    return s.title.toLowerCase().includes(q) || 
-           s.artist.toLowerCase().includes(q) || 
-           s.tags?.some(t => t.toLowerCase().includes(q));
-  });
+  const q = search.toLowerCase().trim();
+  
+  let titleArtistMatches: SongMeta[] = [];
+  let lyricsMatches: SongMeta[] = [];
+
+  if (!q) {
+    titleArtistMatches = songs;
+  } else {
+    titleArtistMatches = songs.filter(s => 
+      s.title.toLowerCase().includes(q) || 
+      s.artist.toLowerCase().includes(q)
+    );
+    
+    const titleArtistIds = new Set(titleArtistMatches.map(s => s.id));
+    
+    lyricsMatches = songs.filter(s => 
+      !titleArtistIds.has(s.id) && 
+      s.content?.toLowerCase().includes(q)
+    );
+  }
 
   return (
     <main className="flex-1 max-w-3xl w-full mx-auto p-4 pb-32">
@@ -61,25 +90,48 @@ export default function Home() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder-secondary focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all shadow-inner"
-          placeholder="Search by title, artist, or tags..."
+          placeholder="Search by title, artist, or lyrics..."
         />
       </div>
 
-      <div className="flex flex-col gap-4">
-        {filteredSongs.length > 0 ? (
-          filteredSongs.map(song => (
-            <SongCard
-              key={song.id}
-              id={song.id}
-              title={song.title}
-              artist={song.artist}
-              songKey={song.key}
-              tags={song.tags}
-            />
-          ))
+      <div className="flex flex-col gap-6">
+        {titleArtistMatches.length > 0 || lyricsMatches.length > 0 ? (
+          <>
+            {/* Title / Artist Matches */}
+            {titleArtistMatches.length > 0 && (
+              <div className="flex flex-col gap-4">
+                {q && <h2 className="text-sm font-bold text-secondary uppercase tracking-wider pl-2">Title & Artist Matches</h2>}
+                {titleArtistMatches.map(song => (
+                  <SongCard
+                    key={song.id}
+                    id={song.id}
+                    title={song.title}
+                    artist={song.artist}
+                    songKey={song.key}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Lyrics Matches */}
+            {lyricsMatches.length > 0 && (
+              <div className="flex flex-col gap-4 mt-4">
+                <h2 className="text-sm font-bold text-secondary uppercase tracking-wider pl-2">Lyrics Matches</h2>
+                {lyricsMatches.map(song => (
+                  <SongCard
+                    key={`lyrics-${song.id}`}
+                    id={song.id}
+                    title={song.title}
+                    artist={song.artist}
+                    songKey={song.key}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12 text-secondary">
-            <p>No songs found.</p>
+            <p>No songs found matching your search.</p>
           </div>
         )}
       </div>

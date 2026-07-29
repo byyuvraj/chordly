@@ -11,10 +11,9 @@ interface SongCardProps {
   title: string;
   artist: string;
   songKey: string;
-  tags?: string[];
 }
 
-export function SongCard({ id, title, artist, songKey, tags = [] }: SongCardProps) {
+export function SongCard({ id, title, artist, songKey }: SongCardProps) {
   return (
     <Link href={`/song/${id}`}>
       <motion.div
@@ -34,20 +33,7 @@ export function SongCard({ id, title, artist, songKey, tags = [] }: SongCardProp
             <span className="text-accent font-bold text-sm">{songKey}</span>
           </div>
         </div>
-        
-        {tags.length > 0 && (
-          <div className="flex gap-2 mt-3 flex-wrap">
-            {tags.map(tag => (
-              <span 
-                key={tag}
-                className="px-2 py-1 rounded-full bg-white/5 border border-white/10 text-secondary text-xs flex items-center gap-1"
-              >
-                <Hash size={10} />
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        </div>
       </motion.div>
     </Link>
   );
