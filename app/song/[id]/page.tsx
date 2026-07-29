@@ -154,7 +154,9 @@ export default function SongViewer({ params }: { params: Promise<{ id: string }>
             if (line.type === 'tab') {
               return (
                 <div key={lineIndex} className="my-6">
-                  <div className="text-xs text-secondary mb-2 opacity-60">Tablature</div>
+                  <div className="text-xs text-secondary mb-2 opacity-60 uppercase tracking-wider font-bold">
+                    {line.tabLabel || "Tablature"}
+                  </div>
                   <div className="bg-black/30 border border-white/5 rounded-xl p-4 overflow-x-auto scrollbar-hide shadow-inner">
                     <pre className="font-mono text-[0.85em] leading-relaxed text-foreground/90">
                       {line.items.map(item => item.lyrics).join('')}

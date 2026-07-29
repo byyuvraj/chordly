@@ -18,7 +18,8 @@ export default function AdminEditPage({ params }: { params: Promise<{ id: string
 
 # --- TABS ---
 # Add your tabs between the {sot} and {eot} tags
-{sot}
+# You can name a tab block by adding a colon and name like this: {sot: Intro Riff}
+{sot: Intro Riff}
 A|----------------------|
 E|----------------------|
 C|----------------------|
@@ -50,7 +51,7 @@ G|----------------------|
           let cleanText = text;
           const titleMatch = text.match(/{title:\s*(.*?)}/i);
           const artistMatch = text.match(/{artist:\s*(.*?)}/i);
-          
+
           if (titleMatch) {
             setTitle(titleMatch[1]);
             cleanText = cleanText.replace(/{title:\s*(.*?)}\n?/i, '');
@@ -59,7 +60,7 @@ G|----------------------|
             setArtist(artistMatch[1]);
             cleanText = cleanText.replace(/{artist:\s*(.*?)}\n?/i, '');
           }
-          
+
           setContent(cleanText.trimStart());
           setLoading(false);
         })
@@ -93,7 +94,7 @@ G|----------------------|
 
     try {
       const fullContentToSave = `{title: ${title}}\n{artist: ${artist}}\n${content}`;
-      
+
       const res = await fetch('/api/github', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -145,14 +146,14 @@ G|----------------------|
 
       {/* Split Pane */}
       <div className="flex-1 flex overflow-hidden">
-        
+
         {/* Left: Editor */}
         <div className="w-1/2 border-r border-white/5 flex flex-col bg-background">
           <div className="p-4 grid grid-cols-2 gap-4 shrink-0 bg-black/20 border-b border-white/5">
             <div>
               <label className="block text-xs text-secondary mb-1 uppercase tracking-wider">URL Slug (ID)</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={id}
                 onChange={e => setId(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
                 placeholder="e.g. dil-ko-tumse"
@@ -162,8 +163,8 @@ G|----------------------|
             </div>
             <div>
               <label className="block text-xs text-secondary mb-1 uppercase tracking-wider">Title</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="Song Title"
@@ -172,8 +173,8 @@ G|----------------------|
             </div>
             <div className="col-span-2">
               <label className="block text-xs text-secondary mb-1 uppercase tracking-wider">Artist</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={artist}
                 onChange={e => setArtist(e.target.value)}
                 placeholder="Artist Name"
@@ -182,15 +183,15 @@ G|----------------------|
             </div>
           </div>
           <div className="flex-1 p-4 flex flex-col">
-             <label className="flex items-center justify-between text-xs text-secondary mb-2 uppercase tracking-wider">
-               <span>ChordPro Content</span>
-             </label>
-             <textarea 
-               value={content}
-               onChange={e => setContent(e.target.value)}
-               className="flex-1 bg-white/5 border border-white/10 rounded-lg p-4 font-mono text-sm outline-none focus:border-accent resize-none w-full"
-               placeholder="{title: Song Name}\n\n[C]Lyrics go here..."
-             />
+            <label className="flex items-center justify-between text-xs text-secondary mb-2 uppercase tracking-wider">
+              <span>Add Chords & Tabs Content</span>
+            </label>
+            <textarea
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              className="flex-1 bg-white/5 border border-white/10 rounded-lg p-4 font-mono text-sm outline-none focus:border-accent resize-none w-full"
+              placeholder="{title: Song Name}\n\n[C]Lyrics go here..."
+            />
           </div>
         </div>
 
@@ -199,14 +200,14 @@ G|----------------------|
           <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-white/10 text-xs text-white/50 border border-white/5">
             Live Preview
           </div>
-          
+
           {/* Render the preview exactly like the main app */}
           {parsedSong ? (
             <div className="max-w-xl mx-auto pb-20">
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold mb-2">{parsedSong.title || 'Untitled'}</h1>
                 <p className="text-secondary text-lg">{parsedSong.artist || 'Unknown Artist'}</p>
-                
+
                 {(parsedSong.key || parsedSong.tempo || parsedSong.time || parsedSong.strumming) && (
                   <div className="mt-6 flex flex-wrap justify-center gap-3">
                     {parsedSong.key && <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm">Key: {parsedSong.key}</span>}
@@ -236,8 +237,10 @@ G|----------------------|
 
                   if (line.type === 'tab') {
                     return (
-                      <div key={lineIndex} className="my-6">
-                        <div className="text-xs text-secondary mb-2 opacity-60">Tablature</div>
+                      <div key={lineIndex} className="my-6 text-left">
+                        <div className="text-xs text-secondary mb-2 opacity-60 uppercase tracking-wider font-bold">
+                          {line.tabLabel || "Tablature"}
+                        </div>
                         <div className="bg-black/30 border border-white/5 rounded-xl p-4 overflow-x-auto scrollbar-hide shadow-inner">
                           <pre className="font-mono text-[0.85em] leading-relaxed text-foreground/90">
                             {line.items.map(item => item.lyrics).join('')}
