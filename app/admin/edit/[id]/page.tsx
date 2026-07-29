@@ -178,7 +178,7 @@ G|----------------------|
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 outline-none focus:border-accent"
               />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-xs text-secondary mb-1 uppercase tracking-wider">Artist</label>
               <input
                 type="text"
