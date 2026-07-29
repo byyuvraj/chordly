@@ -30,12 +30,13 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
   }
 
   const uniqueChords = new Set<string>();
-  const title = (Array.isArray(song.metadata.title) ? song.metadata.title[0] : song.metadata.title) || "Unknown Title";
-  const artist = (Array.isArray(song.metadata.artist) ? song.metadata.artist[0] : song.metadata.artist) || "Unknown Artist";
-  const key = (Array.isArray(song.metadata.key) ? song.metadata.key[0] : song.metadata.key) || "C";
-  const tempo = (Array.isArray(song.metadata.tempo) ? song.metadata.tempo[0] : song.metadata.tempo) || "120";
-  const strumming = (Array.isArray(song.metadata.strumming) ? song.metadata.strumming[0] : song.metadata.strumming) || "D D U U D U";
-  const time = (Array.isArray(song.metadata.time) ? song.metadata.time[0] : song.metadata.time) || "4/4";
+  const meta = song.metadata as any;
+  const title = (Array.isArray(meta.title) ? meta.title[0] : meta.title) || "Unknown Title";
+  const artist = (Array.isArray(meta.artist) ? meta.artist[0] : meta.artist) || "Unknown Artist";
+  const key = (Array.isArray(meta.key) ? meta.key[0] : meta.key) || "C";
+  const tempo = (Array.isArray(meta.tempo) ? meta.tempo[0] : meta.tempo) || "120";
+  const strumming = (Array.isArray(meta.strumming) ? meta.strumming[0] : meta.strumming) || "D D U U D U";
+  const time = (Array.isArray(meta.time) ? meta.time[0] : meta.time) || "4/4";
 
   let inTabBlock = false;
 
