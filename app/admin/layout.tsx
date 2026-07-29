@@ -52,12 +52,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Link 
           href="/" 
           onClick={(e) => handleNav(e, '/')}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:text-white hover:bg-white/5 transition-colors mt-auto"
+          className="hidden md:flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:text-white hover:bg-white/5 transition-colors mt-auto"
         >
           <ChevronLeft size={18} />
           <span>Back to App</span>
         </Link>
       </aside>
+
+      {/* Mobile Back to App FAB */}
+      <Link
+        href="/"
+        onClick={(e) => handleNav(e, '/')}
+        className="md:hidden fixed bottom-6 left-6 z-50 w-12 h-12 bg-black/60 border border-white/10 rounded-full flex items-center justify-center text-secondary hover:text-white shadow-lg backdrop-blur-xl"
+      >
+        <ChevronLeft size={24} className="mr-1" />
+      </Link>
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
