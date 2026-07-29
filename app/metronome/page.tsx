@@ -25,7 +25,7 @@ export default function MetronomePage() {
           >
             <ArrowLeft size={24} />
           </button>
-          <h1 className="font-bold text-foreground text-lg">Pro Metronome</h1>
+          <h1 className="font-bold text-foreground text-lg">Metronome</h1>
         </div>
       </header>
 
