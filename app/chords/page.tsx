@@ -22,8 +22,8 @@ export default function ChordsPage() {
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-glass-border">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center gap-4">
-          <button 
-            onClick={() => router.back()} 
+          <button
+            onClick={() => router.back()}
             className="p-2 -ml-2 text-secondary hover:text-foreground transition-colors rounded-full hover:bg-white/5"
           >
             <ArrowLeft size={24} />
@@ -34,7 +34,7 @@ export default function ChordsPage() {
 
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 pb-32 pt-8">
         <p className="text-secondary mb-10 text-lg">
-          Master the ukulele with this complete reference guide to all common chords.
+          Complete reference guide to all common chords.
         </p>
 
         {Object.entries(groups).map(([groupName, chords]) => (
