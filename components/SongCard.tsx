@@ -33,7 +33,6 @@ export function SongCard({ id, title, artist, songKey }: SongCardProps) {
             <span className="text-accent font-bold text-sm">{songKey}</span>
           </div>
         </div>
-        </div>
       </motion.div>
     </Link>
   );
