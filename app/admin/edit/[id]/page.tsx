@@ -104,10 +104,10 @@ G|----------------------|
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess(`Successfully pushed to GitHub! Vercel is now building it.`);
-        if (isNew) {
-          router.replace(`/admin/edit/${id}`);
-        }
+        setSuccess(`Successfully published! It will take a few minutes for Vercel to build and add the song.`);
+        setTimeout(() => {
+          router.push('/admin');
+        }, 2500);
       } else {
         setError(data.error || 'Failed to save to GitHub');
       }
