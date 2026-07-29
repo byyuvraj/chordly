@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, BookOpen } from 'lucide-react';
 import { SongCard } from '@/components/SongCard';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -143,15 +143,28 @@ export default function Home() {
         )}
       </div>
 
-      {/* Floating Action Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => router.push('/admin')}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-accent rounded-full flex items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow z-40"
-      >
-        <Plus size={32} />
-      </motion.button>
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-40">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => router.push('/chords')}
+          className="w-12 h-12 bg-glass border border-glass-border rounded-full flex items-center justify-center text-secondary hover:text-foreground shadow-lg hover:bg-white/10 transition-all self-end backdrop-blur-xl"
+          title="Chord Library"
+        >
+          <BookOpen size={20} />
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => router.push('/admin')}
+          className="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow"
+          title="Add New Song"
+        >
+          <Plus size={32} />
+        </motion.button>
+      </div>
     </main>
   );
 }
