@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Minus, Plus, Settings, Type, Activity } from 'lucide-react';
+import { Tooltip } from '@/components/Tooltip';
 import { useMetronome } from '@/hooks/useMetronome';
 import { cn } from '@/lib/utils';
 
@@ -45,16 +46,17 @@ export function AutoScrollToolbar({
         {tempo && (
           <>
             <div className="relative">
-              <button
-                onClick={toggleMetronome}
-                className={cn(
-                  "flex items-center justify-center w-12 h-12 rounded-full transition-colors relative z-10",
-                  metronomeOn ? "bg-accent/20 text-accent" : "bg-transparent text-secondary hover:bg-white/10 hover:text-white"
-                )}
-                title={`Metronome (${tempo} BPM)`}
-              >
-                <Activity size={20} />
-              </button>
+              <Tooltip content={`Metronome (${tempo} BPM)`}>
+                <button
+                  onClick={toggleMetronome}
+                  className={cn(
+                    "flex items-center justify-center w-12 h-12 rounded-full transition-colors relative z-10",
+                    metronomeOn ? "bg-accent/20 text-accent" : "bg-transparent text-secondary hover:bg-white/10 hover:text-white"
+                  )}
+                >
+                  <Activity size={20} />
+                </button>
+              </Tooltip>
               
               {/* Visual Beat Indicator */}
               {metronomeOn && (
@@ -74,27 +76,31 @@ export function AutoScrollToolbar({
           </>
         )}
 
-        <button
-          onClick={togglePlay}
-          className={cn(
-            "flex items-center justify-center w-12 h-12 rounded-full transition-colors",
-            isPlaying ? "bg-accent text-black" : "bg-white/10 text-white hover:bg-white/20"
-          )}
-        >
-          {isPlaying ? <Pause fill="currentColor" size={24} /> : <Play fill="currentColor" size={24} className="ml-1" />}
-        </button>
+        <Tooltip content={isPlaying ? "Pause Auto-scroll" : "Start Auto-scroll"}>
+          <button
+            onClick={togglePlay}
+            className={cn(
+              "flex items-center justify-center w-12 h-12 rounded-full transition-colors",
+              isPlaying ? "bg-accent text-black" : "bg-white/10 text-white hover:bg-white/20"
+            )}
+          >
+            {isPlaying ? <Pause fill="currentColor" size={24} /> : <Play fill="currentColor" size={24} className="ml-1" />}
+          </button>
+        </Tooltip>
 
         <div className="w-px h-8 bg-white/10 mx-2" />
 
-        <button
-          onClick={() => setShowSettings(!showSettings)}
-          className={cn(
-            "flex items-center justify-center w-12 h-12 rounded-full transition-colors",
-            showSettings ? "bg-white/20 text-white" : "bg-transparent text-secondary hover:bg-white/10"
-          )}
-        >
-          <Settings size={22} />
-        </button>
+        <Tooltip content="Settings">
+          <button
+            onClick={() => setShowSettings(!showSettings)}
+            className={cn(
+              "flex items-center justify-center w-12 h-12 rounded-full transition-colors",
+              showSettings ? "bg-white/20 text-white" : "bg-transparent text-secondary hover:bg-white/10"
+            )}
+          >
+            <Settings size={22} />
+          </button>
+        </Tooltip>
       </motion.div>
 
       <AnimatePresence>
@@ -112,26 +118,30 @@ export function AutoScrollToolbar({
                 <span className="text-accent">{speed.toFixed(2)}x</span>
               </div>
               <div className="flex items-center gap-3">
-                <button 
-                  onClick={decreaseSpeed}
-                  disabled={speed <= 0.25}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 disabled:opacity-30 active:bg-white/10 transition-colors"
-                >
-                  <Minus size={16} />
-                </button>
+                <Tooltip content="Decrease Speed">
+                  <button 
+                    onClick={decreaseSpeed}
+                    disabled={speed <= 0.25}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 disabled:opacity-30 active:bg-white/10 transition-colors"
+                  >
+                    <Minus size={16} />
+                  </button>
+                </Tooltip>
                 <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-accent" 
                     style={{ width: (((speed - 0.25) / 1.75) * 100) + '%' }}
                   />
                 </div>
-                <button 
-                  onClick={increaseSpeed}
-                  disabled={speed >= 2.0}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 disabled:opacity-30 active:bg-white/10 transition-colors"
-                >
-                  <Plus size={16} />
-                </button>
+                <Tooltip content="Increase Speed">
+                  <button 
+                    onClick={increaseSpeed}
+                    disabled={speed >= 2.0}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 disabled:opacity-30 active:bg-white/10 transition-colors"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </Tooltip>
               </div>
             </div>
 
@@ -143,21 +153,25 @@ export function AutoScrollToolbar({
                 <span>Text Size</span>
               </div>
               <div className="flex items-center gap-3">
-                <button 
-                  onClick={() => setTextSize(Math.max(14, textSize - 2))}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors"
-                >
-                  <Type size={14} />
-                </button>
+                <Tooltip content="Decrease Text Size">
+                  <button 
+                    onClick={() => setTextSize(Math.max(14, textSize - 2))}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors"
+                  >
+                    <Type size={14} />
+                  </button>
+                </Tooltip>
                 <div className="flex-1 text-center text-sm font-medium">
                   {textSize}px
                 </div>
-                <button 
-                  onClick={() => setTextSize(Math.min(32, textSize + 2))}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors"
-                >
-                  <Type size={20} />
-                </button>
+                <Tooltip content="Increase Text Size">
+                  <button 
+                    onClick={() => setTextSize(Math.min(32, textSize + 2))}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors"
+                  >
+                    <Type size={20} />
+                  </button>
+                </Tooltip>
               </div>
             </div>
 
@@ -169,21 +183,25 @@ export function AutoScrollToolbar({
                 <span>Transpose</span>
               </div>
               <div className="flex items-center gap-3">
-                <button 
-                  onClick={decreaseTranspose}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors font-medium text-lg"
-                >
-                  -
-                </button>
+                <Tooltip content="Transpose Down">
+                  <button 
+                    onClick={decreaseTranspose}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors font-medium text-lg"
+                  >
+                    -
+                  </button>
+                </Tooltip>
                 <div className="flex-1 text-center text-sm font-medium">
                   {transposeStep > 0 ? `+${transposeStep}` : transposeStep}
                 </div>
-                <button 
-                  onClick={increaseTranspose}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors font-medium text-lg"
-                >
-                  +
-                </button>
+                <Tooltip content="Transpose Up">
+                  <button 
+                    onClick={increaseTranspose}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors font-medium text-lg"
+                  >
+                    +
+                  </button>
+                </Tooltip>
               </div>
             </div>
           </motion.div>

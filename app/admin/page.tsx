@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FileText, Edit2, Trash2, Search } from 'lucide-react';
+import { Tooltip } from '@/components/Tooltip';
+import { ConfirmModal } from '@/components/ConfirmModal';
 
 interface SongEntry {
   id: string;
@@ -16,6 +18,7 @@ export default function AdminDashboard() {
   const [songs, setSongs] = useState<SongEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [songToDelete, setSongToDelete] = useState<SongEntry | null>(null);
 
   const q = search.toLowerCase().trim();
 
@@ -61,6 +64,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-4 sm:p-8">
+      <ConfirmModal 
+        isOpen={!!songToDelete}
+        title="Delete Song"
+        message={`Are you sure you want to delete "${songToDelete?.title}"? This action cannot be undone.`}
+        onConfirm={() => {
+          // Implement actual deletion logic here when backend is ready
+          setSongToDelete(null);
+        }}
+        onCancel={() => setSongToDelete(null)}
+      />
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Songs Library</h1>
@@ -115,15 +129,22 @@ export default function AdminDashboard() {
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 transition-opacity">
-                      <Link 
-                        href={`/admin/edit/${song.id}`}
-                        className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 text-secondary hover:text-white transition-colors"
-                      >
-                        <Edit2 size={16} />
-                      </Link>
-                      <button className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-secondary hover:text-red-400 transition-colors">
-                        <Trash2 size={16} />
-                      </button>
+                      <Tooltip content="Edit Song">
+                        <Link 
+                          href={`/admin/edit/${song.id}`}
+                          className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 text-secondary hover:text-white transition-colors"
+                        >
+                          <Edit2 size={16} />
+                        </Link>
+                      </Tooltip>
+                      <Tooltip content="Delete Song">
+                        <button 
+                          onClick={() => setSongToDelete(song)}
+                          className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-secondary hover:text-red-400 transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </Tooltip>
                     </div>
                   </td>
                 </tr>

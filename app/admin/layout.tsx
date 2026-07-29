@@ -1,11 +1,16 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Music, Plus, Settings, ChevronLeft } from 'lucide-react';
+import { ConfirmModal } from '@/components/ConfirmModal';
+import { useState } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingHref, setPendingHref] = useState("");
   
   if (pathname === '/admin/login') {
     return <>{children}</>;
@@ -13,14 +18,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (pathname.startsWith('/admin/edit/') && pathname !== href) {
-      if (!window.confirm("Make sure you've published your changes! Are you sure you want to leave this page?")) {
-        e.preventDefault();
-      }
+      e.preventDefault();
+      setPendingHref(href);
+      setShowConfirm(true);
+    }
+  };
+
+  const confirmNav = () => {
+    setShowConfirm(false);
+    if (pendingHref) {
+      router.push(pendingHref);
     }
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
+      <ConfirmModal 
+        isOpen={showConfirm}
+        title="Unsaved Changes"
+        message="Make sure you've published your changes! Are you sure you want to leave this page?"
+        onConfirm={confirmNav}
+        onCancel={() => setShowConfirm(false)}
+      />
+
       {/* Sidebar */}
       <aside className="w-full md:w-64 bg-black/40 border-r border-white/5 p-4 flex flex-col gap-2">
         <Link 
