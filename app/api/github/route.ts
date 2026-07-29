@@ -14,46 +14,23 @@ export async function POST(request: Request) {
     const repo = 'chordly';
     const branch = 'main';
 
-    // 1. Get the latest commit SHA of the branch
-    const refData = await octokit.rest.git.getRef({
-      owner,
-      repo,
-      ref: `heads/${branch}`
-    });
+    // 1. Parallelize initial data fetching: get ref and get current index.json
+    const [refData, indexContentRes] = await Promise.all([
+      octokit.rest.git.getRef({ owner, repo, ref: `heads/${branch}` }),
+      octokit.rest.repos.getContent({ owner, repo, path: 'public/songs/index.json', ref: branch }).catch(() => null)
+    ]);
+    
     const latestCommitSha = refData.data.object.sha;
 
-    // 2. Get the tree SHA
-    const commitData = await octokit.rest.git.getCommit({
-      owner,
-      repo,
-      commit_sha: latestCommitSha
-    });
-    const baseTreeSha = commitData.data.tree.sha;
-
-    // 3. Create blob for the song file
-    const songPath = `public/songs/${id}.txt`;
-    const songBlob = await octokit.rest.git.createBlob({
-      owner,
-      repo,
-      content: content,
-      encoding: 'utf-8'
-    });
-
-    // 4. Fetch the current index.json to update it
-    let indexJson = [];
-    try {
-      const { data: fileData } = await octokit.rest.repos.getContent({
-        owner,
-        repo,
-        path: 'public/songs/index.json',
-        ref: branch
-      });
-      if ('content' in fileData && !Array.isArray(fileData)) {
-        const decodedContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
+    // 2. Parse index.json
+    let indexJson: any[] = [];
+    if (indexContentRes && indexContentRes.data && 'content' in indexContentRes.data && !Array.isArray(indexContentRes.data)) {
+      try {
+        const decodedContent = Buffer.from(indexContentRes.data.content, 'base64').toString('utf-8');
         indexJson = JSON.parse(decodedContent);
+      } catch (e) {
+        console.warn("Could not parse index.json");
       }
-    } catch (e) {
-      console.warn("Could not fetch index.json, creating a new one.");
     }
 
     // Add or update the song in index.json
@@ -64,22 +41,22 @@ export async function POST(request: Request) {
       indexJson.push({ id, title, artist, file: `${id}.txt` });
     }
 
-    // 5. Create blob for index.json
-    const indexBlob = await octokit.rest.git.createBlob({
-      owner,
-      repo,
-      content: JSON.stringify(indexJson, null, 2),
-      encoding: 'utf-8'
-    });
+    // 3. Parallelize getting base tree and creating blobs
+    const [commitData, songBlob, indexBlob] = await Promise.all([
+      octokit.rest.git.getCommit({ owner, repo, commit_sha: latestCommitSha }),
+      octokit.rest.git.createBlob({ owner, repo, content: content, encoding: 'utf-8' }),
+      octokit.rest.git.createBlob({ owner, repo, content: JSON.stringify(indexJson, null, 2), encoding: 'utf-8' })
+    ]);
+    const baseTreeSha = commitData.data.tree.sha;
 
-    // 6. Create a new tree
+    // 4. Create a new tree
     const newTree = await octokit.rest.git.createTree({
       owner,
       repo,
       base_tree: baseTreeSha,
       tree: [
         {
-          path: songPath,
+          path: `public/songs/${id}.txt`,
           mode: '100644',
           type: 'blob',
           sha: songBlob.data.sha
@@ -93,7 +70,7 @@ export async function POST(request: Request) {
       ]
     });
 
-    // 7. Create commit
+    // 5. Create commit
     const newCommit = await octokit.rest.git.createCommit({
       owner,
       repo,
@@ -102,7 +79,7 @@ export async function POST(request: Request) {
       parents: [latestCommitSha]
     });
 
-    // 8. Update ref
+    // 6. Update ref
     await octokit.rest.git.updateRef({
       owner,
       repo,
@@ -130,51 +107,36 @@ export async function DELETE(request: Request) {
     const repo = 'chordly';
     const branch = 'main';
 
-    // 1. Get the latest commit SHA of the branch
-    const refData = await octokit.rest.git.getRef({
-      owner,
-      repo,
-      ref: `heads/${branch}`
-    });
+    // 1. Parallelize initial data fetching: get ref and get current index.json
+    const [refData, indexContentRes] = await Promise.all([
+      octokit.rest.git.getRef({ owner, repo, ref: `heads/${branch}` }),
+      octokit.rest.repos.getContent({ owner, repo, path: 'public/songs/index.json', ref: branch }).catch(() => null)
+    ]);
+    
     const latestCommitSha = refData.data.object.sha;
 
-    // 2. Get the tree SHA
-    const commitData = await octokit.rest.git.getCommit({
-      owner,
-      repo,
-      commit_sha: latestCommitSha
-    });
-    const baseTreeSha = commitData.data.tree.sha;
-
-    // 3. Fetch the current index.json to update it
+    // 2. Parse index.json
     let indexJson: any[] = [];
-    try {
-      const { data: fileData } = await octokit.rest.repos.getContent({
-        owner,
-        repo,
-        path: 'public/songs/index.json',
-        ref: branch
-      });
-      if ('content' in fileData && !Array.isArray(fileData)) {
-        const decodedContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
+    if (indexContentRes && indexContentRes.data && 'content' in indexContentRes.data && !Array.isArray(indexContentRes.data)) {
+      try {
+        const decodedContent = Buffer.from(indexContentRes.data.content, 'base64').toString('utf-8');
         indexJson = JSON.parse(decodedContent);
+      } catch (e) {
+        console.warn("Could not parse index.json");
       }
-    } catch (e) {
-      return NextResponse.json({ error: "Could not fetch index.json" }, { status: 500 });
     }
 
-    // 4. Update index.json by filtering out the deleted song
+    // Update index.json by filtering out the deleted song
     indexJson = indexJson.filter((s: any) => s.id !== id);
 
-    // 5. Create blob for the updated index.json
-    const indexBlob = await octokit.rest.git.createBlob({
-      owner,
-      repo,
-      content: JSON.stringify(indexJson, null, 2),
-      encoding: 'utf-8'
-    });
+    // 3. Parallelize getting base tree and creating index blob
+    const [commitData, indexBlob] = await Promise.all([
+      octokit.rest.git.getCommit({ owner, repo, commit_sha: latestCommitSha }),
+      octokit.rest.git.createBlob({ owner, repo, content: JSON.stringify(indexJson, null, 2), encoding: 'utf-8' })
+    ]);
+    const baseTreeSha = commitData.data.tree.sha;
 
-    // 6. Create a new tree (set sha: null to delete the song text file)
+    // 4. Create a new tree (set sha: null to delete the song text file)
     const newTree = await octokit.rest.git.createTree({
       owner,
       repo,
@@ -195,7 +157,7 @@ export async function DELETE(request: Request) {
       ]
     });
 
-    // 7. Create commit
+    // 5. Create commit
     const newCommit = await octokit.rest.git.createCommit({
       owner,
       repo,
@@ -204,7 +166,7 @@ export async function DELETE(request: Request) {
       parents: [latestCommitSha]
     });
 
-    // 8. Update ref
+    // 6. Update ref
     await octokit.rest.git.updateRef({
       owner,
       repo,
@@ -218,4 +180,3 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-
