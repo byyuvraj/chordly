@@ -169,7 +169,7 @@ export default function Home() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => router.push('/admin')}
-          className="hidden sm:flex w-12 h-12 sm:w-16 sm:h-16 bg-accent rounded-full items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow self-end"
+          className="w-12 h-12 sm:w-16 sm:h-16 bg-accent rounded-full flex items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow self-end"
           title="Add New Song"
         >
           <Plus className="w-6 h-6 sm:w-8 sm:h-8" />

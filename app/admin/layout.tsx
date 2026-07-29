@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </Link>
         <Link 
           href="/admin/edit/new" 
-          className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${pathname === '/admin/edit/new' ? 'bg-white/10 text-white' : 'text-secondary hover:text-white hover:bg-white/5'}`}
+          className={`hidden md:flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${pathname === '/admin/edit/new' ? 'bg-white/10 text-white' : 'text-secondary hover:text-white hover:bg-white/5'}`}
         >
           <Plus size={18} />
           <span>New Song</span>
