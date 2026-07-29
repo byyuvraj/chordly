@@ -68,6 +68,8 @@ export default function AdminDashboard() {
         isOpen={!!songToDelete}
         title="Delete Song"
         message={`Are you sure you want to delete "${songToDelete?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        isDanger={true}
         onConfirm={() => {
           // Implement actual deletion logic here when backend is ready
           setSongToDelete(null);
@@ -137,7 +139,7 @@ export default function AdminDashboard() {
                           <Edit2 size={16} />
                         </Link>
                       </Tooltip>
-                      <Tooltip content="Delete Song">
+                      <Tooltip content="Delete Song" align="right">
                         <button 
                           onClick={() => setSongToDelete(song)}
                           className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-secondary hover:text-red-400 transition-colors"
