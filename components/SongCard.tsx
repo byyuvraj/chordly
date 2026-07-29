@@ -29,9 +29,11 @@ export function SongCard({ id, title, artist, songKey }: SongCardProps) {
             </p>
           </div>
           
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 border border-accent/20">
-            <span className="text-accent font-bold text-sm">{songKey}</span>
-          </div>
+          {songKey && (
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 border border-accent/20">
+              <span className="text-accent font-bold text-sm">{songKey}</span>
+            </div>
+          )}
         </div>
       </motion.div>
     </Link>

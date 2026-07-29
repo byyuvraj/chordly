@@ -32,7 +32,10 @@ export default function Home() {
             try {
               const textRes = await fetch(`/songs/${song.file}`);
               if (textRes.ok) {
-                song.content = await textRes.text();
+                const text = await textRes.text();
+                song.content = text;
+                const keyMatch = text.match(/{(?:key|k):\s*([^}]+)}/i);
+                song.key = keyMatch ? keyMatch[1].trim() : '';
               }
             } catch (e) {
               // Ignore failure, we just won't be able to search lyrics for this song
