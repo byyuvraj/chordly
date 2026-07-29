@@ -16,6 +16,10 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "Chordly",
   },
+  icons: {
+    icon: '/api/icon/192',
+    apple: '/api/icon/192',
+  },
 };
 
 export default function RootLayout({
