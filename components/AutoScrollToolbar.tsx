@@ -2,10 +2,11 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Minus, Plus, Settings, Type, Activity } from 'lucide-react';
+import { Play, Pause, Minus, Plus, Settings, Type, Activity, Edit2 } from 'lucide-react';
 import { Tooltip } from '@/components/Tooltip';
 import { useMetronome } from '@/hooks/useMetronome';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface AutoScrollToolbarProps {
   isPlaying: boolean;
@@ -19,6 +20,7 @@ interface AutoScrollToolbarProps {
   increaseTranspose: () => void;
   decreaseTranspose: () => void;
   tempo?: number;
+  songId?: string;
 }
 
 export function AutoScrollToolbar({
@@ -32,7 +34,8 @@ export function AutoScrollToolbar({
   transposeStep,
   increaseTranspose,
   decreaseTranspose,
-  tempo
+  tempo,
+  songId
 }: AutoScrollToolbarProps) {
   const [showSettings, setShowSettings] = React.useState(false);
   const { isPlaying: metronomeOn, toggle: toggleMetronome, currentBeat } = useMetronome(tempo);
@@ -204,6 +207,20 @@ export function AutoScrollToolbar({
                 </Tooltip>
               </div>
             </div>
+            
+            {/* Edit Song Button */}
+            {songId && (
+              <>
+                <div className="w-full h-px bg-white/10" />
+                <Link
+                  href={`/admin/edit/${songId}`}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-secondary hover:text-white transition-colors text-sm font-medium border border-white/10"
+                >
+                  <Edit2 size={16} />
+                  Edit Song in Admin
+                </Link>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
