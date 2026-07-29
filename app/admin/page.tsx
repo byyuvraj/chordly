@@ -62,6 +62,28 @@ export default function AdminDashboard() {
     loadSongs();
   }, []);
 
+  const handleDelete = async () => {
+    if (!songToDelete) return;
+    
+    const id = songToDelete.id;
+    // Optimistic UI update
+    setSongs(songs.filter(s => s.id !== id));
+    setSongToDelete(null);
+
+    try {
+      const res = await fetch('/api/github', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (!res.ok) {
+        console.error('Failed to delete on GitHub');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="p-4 sm:p-8">
       <ConfirmModal 
@@ -70,10 +92,7 @@ export default function AdminDashboard() {
         message={`Are you sure you want to delete "${songToDelete?.title}"? This action cannot be undone.`}
         confirmText="Delete"
         isDanger={true}
-        onConfirm={() => {
-          // Implement actual deletion logic here when backend is ready
-          setSongToDelete(null);
-        }}
+        onConfirm={handleDelete}
         onCancel={() => setSongToDelete(null)}
       />
 
