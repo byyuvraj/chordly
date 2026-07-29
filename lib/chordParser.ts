@@ -14,6 +14,7 @@ export interface ParsedSong {
 export interface ParsedLine {
   items: ParsedItem[];
   type: 'lyric' | 'chord' | 'empty' | 'tab';
+  tabLabel?: string;
 }
 
 export interface ParsedItem {
@@ -39,13 +40,25 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
   const time = (Array.isArray(meta.time) ? meta.time[0] : meta.time) || "4/4";
 
   let inTabBlock = false;
+  let currentTabLabel = "Tablature";
 
   let cleanedLines = song.lines.map(line => {
     let lineIsEot = false;
+    let labelForThisLine = currentTabLabel;
 
     line.items.forEach((item: any) => {
-      if (item.name === 'start_of_tab' || item.name === 'sot' || (item.lyrics && item.lyrics.includes('{sot}'))) inTabBlock = true;
-      if (item.name === 'end_of_tab' || item.name === 'eot' || (item.lyrics && item.lyrics.includes('{eot}'))) lineIsEot = true;
+      if (item.name === 'start_of_tab' || item.name === 'sot' || (item.lyrics && item.lyrics.includes('{sot}'))) {
+        inTabBlock = true;
+        if (item.value) {
+          currentTabLabel = item.value;
+        } else {
+          currentTabLabel = "Tablature";
+        }
+        labelForThisLine = currentTabLabel;
+      }
+      if (item.name === 'end_of_tab' || item.name === 'eot' || (item.lyrics && item.lyrics.includes('{eot}'))) {
+        lineIsEot = true;
+      }
     });
 
     const items: ParsedItem[] = line.items.map(item => {
@@ -81,7 +94,8 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
 
     return {
       items,
-      type
+      type,
+      tabLabel: type === 'tab' ? labelForThisLine : undefined
     };
   }) as ParsedLine[];
 
@@ -106,7 +120,7 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
   cleanedLines.forEach(line => {
     if (line.type === 'tab') {
       if (!currentTabBlock) {
-        currentTabBlock = { type: 'tab', items: [...line.items] };
+        currentTabBlock = { type: 'tab', items: [...line.items], tabLabel: line.tabLabel };
       } else {
         // Add a newline item and then the next items
         currentTabBlock.items.push({ chords: '', lyrics: '\n' });
