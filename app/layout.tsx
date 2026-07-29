@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     title: "Chordly",
   },
   icons: {
+    icon: '/icon.png',
     apple: '/api/icon/192',
   },
 };
