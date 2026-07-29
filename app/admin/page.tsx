@@ -33,8 +33,20 @@ export default function AdminDashboard() {
     const loadSongs = async () => {
       try {
         const res = await fetch('/songs/index.json');
-        const staticSongs = await res.json();
+        let staticSongs = await res.json();
         
+        // Filter out recently deleted songs that Vercel hasn't removed yet
+        try {
+          const deleted = JSON.parse(localStorage.getItem('chordly_deleted_songs') || '[]');
+          if (deleted.length > 0) {
+            // Clean up: only keep deleted IDs that are STILL incorrectly showing up in staticSongs
+            const stillPresentDeleted = deleted.filter((id: string) => staticSongs.some((s: SongEntry) => s.id === id));
+            localStorage.setItem('chordly_deleted_songs', JSON.stringify(stillPresentDeleted));
+            
+            staticSongs = staticSongs.filter((s: SongEntry) => !deleted.includes(s.id));
+          }
+        } catch (e) {}
+
         const populatedSongs = await Promise.all(
           staticSongs.map(async (song: SongEntry) => {
             if (song.file) {
@@ -69,6 +81,15 @@ export default function AdminDashboard() {
     // Optimistic UI update
     setSongs(songs.filter(s => s.id !== id));
     setSongToDelete(null);
+
+    // Track deleted song in localStorage to prevent it from reappearing on refresh before Vercel builds
+    try {
+      const deleted = JSON.parse(localStorage.getItem('chordly_deleted_songs') || '[]');
+      if (!deleted.includes(id)) {
+        deleted.push(id);
+        localStorage.setItem('chordly_deleted_songs', JSON.stringify(deleted));
+      }
+    } catch(e) {}
 
     try {
       const res = await fetch('/api/github', {

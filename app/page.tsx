@@ -24,7 +24,15 @@ export default function Home() {
   const loadSongs = async () => {
     try {
       const res = await fetch('/songs/index.json');
-      const staticSongs = await res.json();
+      let staticSongs = await res.json();
+      
+      // Filter out recently deleted songs that Vercel hasn't removed yet
+      try {
+        const deleted = JSON.parse(localStorage.getItem('chordly_deleted_songs') || '[]');
+        if (deleted.length > 0) {
+          staticSongs = staticSongs.filter((s: SongMeta) => !deleted.includes(s.id));
+        }
+      } catch (e) {}
       
       // Fetch text content for all static songs in parallel to enable lyrics search
       const populatedSongs = await Promise.all(
