@@ -201,6 +201,7 @@ export default function SongViewer({ params }: { params: Promise<{ id: string }>
         transposeStep={transposeStep}
         increaseTranspose={() => setTransposeStep(s => s + 1)}
         decreaseTranspose={() => setTransposeStep(s => s - 1)}
+        tempo={song.tempo ? parseInt(song.tempo) : undefined}
       />
     </div>
   );

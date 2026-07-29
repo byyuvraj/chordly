@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Minus, Plus, Settings, Type } from 'lucide-react';
+import { Play, Pause, Minus, Plus, Settings, Type, Activity } from 'lucide-react';
+import { useMetronome } from '@/hooks/useMetronome';
 import { cn } from '@/lib/utils';
 
 interface AutoScrollToolbarProps {
@@ -16,6 +17,7 @@ interface AutoScrollToolbarProps {
   transposeStep: number;
   increaseTranspose: () => void;
   decreaseTranspose: () => void;
+  tempo?: number;
 }
 
 export function AutoScrollToolbar({
@@ -28,9 +30,12 @@ export function AutoScrollToolbar({
   setTextSize,
   transposeStep,
   increaseTranspose,
-  decreaseTranspose
+  increaseTranspose,
+  decreaseTranspose,
+  tempo
 }: AutoScrollToolbarProps) {
   const [showSettings, setShowSettings] = React.useState(false);
+  const { isPlaying: metronomeOn, toggle: toggleMetronome, currentBeat } = useMetronome(tempo);
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -38,6 +43,38 @@ export function AutoScrollToolbar({
         layout
         className="flex items-center gap-1 p-2 rounded-full bg-black/60 border border-white/10 backdrop-blur-2xl shadow-2xl"
       >
+        {tempo && (
+          <>
+            <div className="relative">
+              <button
+                onClick={toggleMetronome}
+                className={cn(
+                  "flex items-center justify-center w-12 h-12 rounded-full transition-colors relative z-10",
+                  metronomeOn ? "bg-accent/20 text-accent" : "bg-transparent text-secondary hover:bg-white/10 hover:text-white"
+                )}
+                title={`Metronome (${tempo} BPM)`}
+              >
+                <Activity size={20} />
+              </button>
+              
+              {/* Visual Beat Indicator */}
+              {metronomeOn && (
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className={cn(
+                    "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                    currentBeat === 0 ? "bg-red-500" : "bg-accent"
+                  )}></span>
+                  <span className={cn(
+                    "relative inline-flex rounded-full h-3 w-3",
+                    currentBeat === 0 ? "bg-red-500" : "bg-accent"
+                  )}></span>
+                </span>
+              )}
+            </div>
+            <div className="w-px h-8 bg-white/10 mx-1" />
+          </>
+        )}
+
         <button
           onClick={togglePlay}
           className={cn(
