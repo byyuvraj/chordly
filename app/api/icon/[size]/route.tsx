@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export async function GET(request: Request, { params }: { params: { size: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ size: string }> }) {
   const unwrappedParams = await params;
   const size = parseInt(unwrappedParams.size) || 192;
   
