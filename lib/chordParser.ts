@@ -58,8 +58,13 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
           lyrics: item.lyrics || ''
         };
       }
+      
+      if (item instanceof ChordSheetJS.Tag || item instanceof ChordSheetJS.Comment) {
+        return null;
+      }
+
       return { chords: '', lyrics: (item as any).string || item.toString() || '' };
-    }).filter(i => !i.lyrics.includes('{sot}') && !i.lyrics.includes('{eot}'));
+    }).filter(i => i !== null && !i.lyrics.includes('{sot}') && !i.lyrics.includes('{eot}')) as ParsedItem[];
 
     let type: 'lyric' | 'chord' | 'empty' | 'tab' = 'lyric';
     if (line.isEmpty() && items.length === 0) {
