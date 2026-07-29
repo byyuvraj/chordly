@@ -40,14 +40,14 @@ export default function ChordsPage() {
         {Object.entries(groups).map(([groupName, chords]) => (
           <div key={groupName} className="mb-12">
             <h2 className="text-xl font-bold text-foreground mb-6 pl-3 border-l-4 border-accent uppercase tracking-widest">{groupName}</h2>
-            <div className="flex flex-wrap gap-4 sm:gap-6 justify-start">
+            <div className="grid grid-cols-2 min-[360px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-3 sm:gap-5">
               {chords.map(chordName => {
                 const fingering = ukeChords[chordName];
                 if (!fingering) return null;
                 return (
-                  <div key={chordName} className="flex flex-col items-center p-4 bg-glass border border-glass-border rounded-2xl hover:scale-105 hover:bg-white/5 transition-all shadow-inner w-[104px]">
-                    <UkeChordDiagram chord={chordName} width={70} />
-                    <span className="mt-4 font-bold text-foreground text-sm">{chordName}</span>
+                  <div key={chordName} className="flex flex-col items-center p-3 sm:p-4 bg-glass border border-glass-border rounded-2xl hover:scale-105 hover:bg-white/5 transition-all shadow-inner w-full">
+                    <UkeChordDiagram chord={chordName} width={65} />
+                    <span className="mt-3 font-bold text-foreground text-sm">{chordName}</span>
                   </div>
                 );
               })}
