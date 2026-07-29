@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus } from 'lucide-react';
 import { SongCard } from '@/components/SongCard';
-import { AddSongModal } from '@/components/AddSongModal';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 interface SongMeta {
   id: string;
@@ -19,7 +19,7 @@ interface SongMeta {
 export default function Home() {
   const [songs, setSongs] = useState<SongMeta[]>([]);
   const [search, setSearch] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   const loadSongs = async () => {
     try {
@@ -88,17 +88,11 @@ export default function Home() {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => router.push('/admin')}
         className="fixed bottom-8 right-8 w-16 h-16 bg-accent rounded-full flex items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow z-40"
       >
         <Plus size={32} />
       </motion.button>
-
-      <AddSongModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={loadSongs}
-      />
     </main>
   );
 }

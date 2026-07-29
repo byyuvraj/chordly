@@ -62,6 +62,7 @@ export const ukeChords: Record<string, UkeChordFingering> = {
 };
 
 export function getUkeFingering(chordName: string): UkeChordFingering | null {
+  if (!chordName) return null;
   // Try to find exact match
   if (ukeChords[chordName]) return ukeChords[chordName];
   
