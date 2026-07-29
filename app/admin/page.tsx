@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FileText, Edit2, Trash2 } from 'lucide-react';
+import { FileText, Edit2, Trash2, Search } from 'lucide-react';
 
 interface SongEntry {
   id: string;
@@ -14,6 +14,12 @@ interface SongEntry {
 export default function AdminDashboard() {
   const [songs, setSongs] = useState<SongEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const filteredSongs = songs.filter(song => 
+    song.title.toLowerCase().includes(search.toLowerCase()) || 
+    song.artist.toLowerCase().includes(search.toLowerCase())
+  );
 
   useEffect(() => {
     fetch('/songs/index.json')
@@ -43,6 +49,19 @@ export default function AdminDashboard() {
         </Link>
       </div>
 
+      <div className="relative mb-6">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <Search className="text-secondary" size={20} />
+        </div>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-foreground placeholder-secondary focus:outline-none focus:border-accent transition-all"
+          placeholder="Search songs by title or artist..."
+        />
+      </div>
+
       {loading ? (
         <div className="text-secondary">Loading songs...</div>
       ) : (
@@ -56,7 +75,7 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {songs.map((song) => (
+              {filteredSongs.map((song) => (
                 <tr key={song.id} className="hover:bg-white/5 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -84,10 +103,10 @@ export default function AdminDashboard() {
                   </td>
                 </tr>
               ))}
-              {songs.length === 0 && (
+              {filteredSongs.length === 0 && (
                 <tr>
                   <td colSpan={3} className="px-6 py-8 text-center text-secondary">
-                    No songs found. Add your first song to get started!
+                    No songs found.
                   </td>
                 </tr>
               )}
