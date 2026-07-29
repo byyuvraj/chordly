@@ -126,30 +126,37 @@ G|----------------------|
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-[100dvh] lg:h-screen lg:overflow-hidden">
       {/* Header bar */}
-      <header className="h-16 border-b border-white/5 bg-black/40 flex items-center justify-between px-6 shrink-0">
+      <header className="h-auto lg:h-16 py-4 lg:py-0 border-b border-white/5 bg-black/40 flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 sm:px-6 shrink-0 gap-4">
         <h1 className="font-bold text-lg">{isNew ? 'Create New Song' : `Editing: ${title || id}`}</h1>
-        <div className="flex items-center gap-4">
-          {error && <span className="text-red-400 text-sm">{error}</span>}
-          {success && <span className="text-green-400 text-sm flex items-center gap-2">{success}</span>}
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          {error && <span className="text-red-400 text-sm hidden sm:inline">{error}</span>}
+          {success && <span className="text-green-400 text-sm hidden sm:flex items-center gap-2">{success}</span>}
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-accent text-black font-semibold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition-colors disabled:opacity-50"
+            className="bg-accent text-black font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors disabled:opacity-50 w-full sm:w-auto"
           >
             {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             <span>Publish to GitHub</span>
           </button>
         </div>
+        {/* Mobile only status messages */}
+        {(error || success) && (
+          <div className="w-full sm:hidden text-center text-sm">
+            {error && <span className="text-red-400">{error}</span>}
+            {success && <span className="text-green-400">{success}</span>}
+          </div>
+        )}
       </header>
 
       {/* Split Pane */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
 
         {/* Left: Editor */}
-        <div className="w-1/2 border-r border-white/5 flex flex-col bg-background">
-          <div className="p-4 grid grid-cols-2 gap-4 shrink-0 bg-black/20 border-b border-white/5">
+        <div className="w-full lg:w-1/2 border-r border-white/5 flex flex-col bg-background min-h-[500px] lg:min-h-0 lg:overflow-hidden">
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 shrink-0 bg-black/20 border-b border-white/5">
             <div>
               <label className="block text-xs text-secondary mb-1 uppercase tracking-wider">URL Slug (ID)</label>
               <input
@@ -196,8 +203,8 @@ G|----------------------|
         </div>
 
         {/* Right: Preview */}
-        <div className="w-1/2 bg-black/40 overflow-y-auto p-8 relative">
-          <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-white/10 text-xs text-white/50 border border-white/5">
+        <div className="w-full lg:w-1/2 bg-black/40 lg:overflow-y-auto p-4 sm:p-8 relative min-h-[500px]">
+          <div className="hidden lg:block absolute top-4 right-4 px-3 py-1 rounded-full bg-white/10 text-xs text-white/50 border border-white/5">
             Live Preview
           </div>
 

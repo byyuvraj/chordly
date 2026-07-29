@@ -29,15 +29,15 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Songs Library</h1>
-          <p className="text-secondary">Manage your Ukulele song collection.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Songs Library</h1>
+          <p className="text-secondary text-sm sm:text-base">Manage your Ukulele song collection.</p>
         </div>
         <Link 
           href="/admin/edit/new"
-          className="bg-accent text-black font-semibold px-6 py-2.5 rounded-full hover:bg-accent/90 transition-colors"
+          className="bg-accent text-black font-semibold px-6 py-2.5 rounded-full hover:bg-accent/90 transition-colors w-full sm:w-auto text-center"
         >
           Add New Song
         </Link>
@@ -46,8 +46,8 @@ export default function AdminDashboard() {
       {loading ? (
         <div className="text-secondary">Loading songs...</div>
       ) : (
-        <div className="bg-black/20 border border-white/5 rounded-2xl overflow-hidden">
-          <table className="w-full text-left">
+        <div className="bg-black/20 border border-white/5 rounded-2xl overflow-x-auto">
+          <table className="w-full text-left min-w-[600px]">
             <thead className="bg-black/40 text-secondary text-sm uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4 font-medium">Song</th>
