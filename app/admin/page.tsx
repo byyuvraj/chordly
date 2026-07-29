@@ -9,6 +9,7 @@ interface SongEntry {
   title: string;
   artist: string;
   file: string;
+  content?: string;
 }
 
 export default function AdminDashboard() {
@@ -16,22 +17,46 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const filteredSongs = songs.filter(song => 
-    song.title.toLowerCase().includes(search.toLowerCase()) || 
-    song.artist.toLowerCase().includes(search.toLowerCase())
-  );
+  const q = search.toLowerCase().trim();
+
+  const filteredSongs = songs.filter(song => {
+    if (!q) return true;
+    return song.title.toLowerCase().includes(q) || 
+           song.artist.toLowerCase().includes(q) ||
+           (song.content && song.content.toLowerCase().includes(q));
+  });
 
   useEffect(() => {
-    fetch('/songs/index.json')
-      .then(res => res.json())
-      .then(data => {
-        setSongs(data);
-        setLoading(false);
-      })
-      .catch(err => {
+    const loadSongs = async () => {
+      try {
+        const res = await fetch('/songs/index.json');
+        const staticSongs = await res.json();
+        
+        const populatedSongs = await Promise.all(
+          staticSongs.map(async (song: SongEntry) => {
+            if (song.file) {
+              try {
+                const textRes = await fetch(`/songs/${song.file}`);
+                if (textRes.ok) {
+                  song.content = await textRes.text();
+                }
+              } catch (e) {
+                // Ignore failure
+              }
+            }
+            return song;
+          })
+        );
+        
+        setSongs(populatedSongs);
+      } catch (err) {
         console.error(err);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    
+    loadSongs();
   }, []);
 
   return (
