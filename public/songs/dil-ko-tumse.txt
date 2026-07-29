@@ -1,0 +1,25 @@
+we {title: Dil Ko Tumse}
+{artist: R.D. Burman}
+{key: C}
+{tempo: 90}
+{time: 4/4}
+{strumming: D D U U D U}
+
+{sot}
+A|--0--2--3--
+E|--1--------
+{eot}
+
+[C]Dil ko [G]tumse [Am]pyaar hua
+Pehli [F]baar hua [G]tumse pyaar [C]hua
+Main bhi aashiq [G]yaar hua
+Pehli [F]baar hua [G]tumse pyaar [C]hua
+
+[C]Chhaayi hai be[Am]taabi
+[F]Meri jaan ka[G]ho main kya ka[C]roon
+[C]Chhaayi hai be[Am]taabi
+[F]Meri jaan ka[G]ho main kya ka[C]roon
+[C]Kho gaya main [Am]khayalon mein
+[F]Ab jee na sa[G]koon
+[C]Dil ko [G]tumse [Am]pyaar hua
+Pehli [F]baar hua [G]tumse pyaar [C]hua

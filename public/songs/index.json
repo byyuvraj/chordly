@@ -1,0 +1,18 @@
+[
+  {
+    "id": "dil-ko-tumse",
+    "title": "Dil Ko Tumse",
+    "artist": "R.D. Burman",
+    "key": "C",
+    "tags": ["Bollywood", "Romantic", "Classic"],
+    "file": "dil-ko-tumse.txt"
+  },
+  {
+    "id": "kesariya",
+    "title": "Kesariya",
+    "artist": "Arijit Singh",
+    "key": "G",
+    "tags": ["Bollywood", "Romantic", "Modern"],
+    "file": "kesariya.txt"
+  }
+]

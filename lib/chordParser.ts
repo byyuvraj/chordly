@@ -1,0 +1,129 @@
+import ChordSheetJS from 'chordsheetjs';
+
+export interface ParsedSong {
+  title: string;
+  artist: string;
+  key: string;
+  tempo?: string;
+  strumming?: string;
+  time?: string;
+  lines: ParsedLine[];
+  uniqueChords: string[];
+}
+
+export interface ParsedLine {
+  items: ParsedItem[];
+  type: 'lyric' | 'chord' | 'empty' | 'tab';
+}
+
+export interface ParsedItem {
+  lyrics: string;
+  chords: string;
+}
+
+export function parseChordPro(chordProString: string, transposeStep: number = 0): ParsedSong {
+  const parser = new ChordSheetJS.ChordProParser();
+  let song = parser.parse(chordProString);
+
+  if (transposeStep !== 0) {
+    song = song.transpose(transposeStep);
+  }
+
+  const uniqueChords = new Set<string>();
+  const title = (Array.isArray(song.metadata.title) ? song.metadata.title[0] : song.metadata.title) || "Unknown Title";
+  const artist = (Array.isArray(song.metadata.artist) ? song.metadata.artist[0] : song.metadata.artist) || "Unknown Artist";
+  const key = (Array.isArray(song.metadata.key) ? song.metadata.key[0] : song.metadata.key) || "C";
+  const tempo = (Array.isArray(song.metadata.tempo) ? song.metadata.tempo[0] : song.metadata.tempo) || "120";
+  const strumming = (Array.isArray(song.metadata.strumming) ? song.metadata.strumming[0] : song.metadata.strumming) || "D D U U D U";
+  const time = (Array.isArray(song.metadata.time) ? song.metadata.time[0] : song.metadata.time) || "4/4";
+
+  let inTabBlock = false;
+
+  let cleanedLines = song.lines.map(line => {
+    let lineIsEot = false;
+
+    line.items.forEach((item: any) => {
+      if (item.name === 'start_of_tab' || item.name === 'sot' || (item.lyrics && item.lyrics.includes('{sot}'))) inTabBlock = true;
+      if (item.name === 'end_of_tab' || item.name === 'eot' || (item.lyrics && item.lyrics.includes('{eot}'))) lineIsEot = true;
+    });
+
+    const items: ParsedItem[] = line.items.map(item => {
+      let chordName = '';
+      if (item instanceof ChordSheetJS.ChordLyricsPair) {
+        chordName = item.chords || '';
+        if (chordName) uniqueChords.add(chordName);
+        return {
+          chords: chordName,
+          lyrics: item.lyrics || ''
+        };
+      }
+      return { chords: '', lyrics: item.string || '' };
+    }).filter(i => !i.lyrics.includes('{sot}') && !i.lyrics.includes('{eot}'));
+
+    let type: 'lyric' | 'chord' | 'empty' | 'tab' = 'lyric';
+    if (line.isEmpty() && items.length === 0) {
+      type = 'empty';
+    } else if (inTabBlock && !lineIsEot) {
+      type = 'tab';
+    } else if (line.items.some((item: any) => item.chords)) {
+      type = 'chord';
+    } else if (items.every(i => i.lyrics.trim() === '')) {
+      type = 'empty';
+    }
+
+    if (lineIsEot) inTabBlock = false;
+
+    return {
+      items,
+      type
+    };
+  }) as ParsedLine[];
+
+  // Remove leading empty lines
+  const firstNonEmptyIndex = cleanedLines.findIndex(line => line.type !== 'empty');
+  if (firstNonEmptyIndex > 0) {
+    cleanedLines = cleanedLines.slice(firstNonEmptyIndex);
+  }
+
+  // Collapse consecutive empty lines
+  cleanedLines = cleanedLines.filter((line, index, arr) => {
+    if (line.type === 'empty' && index > 0 && arr[index - 1].type === 'empty') {
+      return false;
+    }
+    return true;
+  });
+
+  // Group consecutive tab lines into single tab blocks
+  const groupedLines: ParsedLine[] = [];
+  let currentTabBlock: ParsedLine | null = null;
+
+  cleanedLines.forEach(line => {
+    if (line.type === 'tab') {
+      if (!currentTabBlock) {
+        currentTabBlock = { type: 'tab', items: [...line.items] };
+      } else {
+        // Add a newline item and then the next items
+        currentTabBlock.items.push({ chords: '', lyrics: '\n' });
+        currentTabBlock.items.push(...line.items);
+      }
+    } else {
+      if (currentTabBlock) {
+        groupedLines.push(currentTabBlock);
+        currentTabBlock = null;
+      }
+      groupedLines.push(line);
+    }
+  });
+  if (currentTabBlock) groupedLines.push(currentTabBlock);
+
+  return {
+    title,
+    artist,
+    key,
+    tempo,
+    strumming,
+    time,
+    lines: groupedLines,
+    uniqueChords: Array.from(uniqueChords)
+  };
+}
