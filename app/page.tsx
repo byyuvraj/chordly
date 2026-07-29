@@ -144,35 +144,35 @@ export default function Home() {
       </div>
 
       {/* Floating Action Buttons */}
-      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-40">
+      <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 flex flex-col gap-3 sm:gap-4 z-40">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => router.push('/metronome')}
-          className="w-12 h-12 bg-glass border border-glass-border rounded-full flex items-center justify-center text-secondary hover:text-foreground shadow-lg hover:bg-white/10 transition-all self-end backdrop-blur-xl"
+          className="w-10 h-10 sm:w-12 sm:h-12 bg-glass border border-glass-border rounded-full flex items-center justify-center text-secondary hover:text-foreground shadow-lg hover:bg-white/10 transition-all self-end backdrop-blur-xl"
           title="Metronome"
         >
-          <Activity size={20} />
+          <Activity className="w-4 h-4 sm:w-5 sm:h-5" />
         </motion.button>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => router.push('/chords')}
-          className="w-12 h-12 bg-glass border border-glass-border rounded-full flex items-center justify-center text-secondary hover:text-foreground shadow-lg hover:bg-white/10 transition-all self-end backdrop-blur-xl"
+          className="w-10 h-10 sm:w-12 sm:h-12 bg-glass border border-glass-border rounded-full flex items-center justify-center text-secondary hover:text-foreground shadow-lg hover:bg-white/10 transition-all self-end backdrop-blur-xl"
           title="Chord Library"
         >
-          <BookOpen size={20} />
+          <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
         </motion.button>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => router.push('/admin')}
-          className="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow"
+          className="w-12 h-12 sm:w-16 sm:h-16 bg-accent rounded-full flex items-center justify-center text-black shadow-[0_0_30px_rgba(245,197,99,0.3)] hover:shadow-[0_0_40px_rgba(245,197,99,0.5)] transition-shadow self-end"
           title="Add New Song"
         >
-          <Plus size={32} />
+          <Plus className="w-6 h-6 sm:w-8 sm:h-8" />
         </motion.button>
       </div>
     </main>
