@@ -179,7 +179,7 @@ export default function SongViewer({ params }: { params: Promise<{ id: string }>
                       )}
                     </div>
                     {/* Render Lyric */}
-                    <span className="whitespace-pre text-foreground/90 font-medium text-[1.1em]">
+                    <span className="whitespace-pre-wrap text-foreground/90 font-medium text-[1.1em]">
                       {item.lyrics || (item.chords ? ' ' : '')}
                     </span>
                   </div>
