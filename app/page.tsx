@@ -179,7 +179,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleInstallClick}
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/20 border border-accent/50 rounded-full flex items-center justify-center text-accent shadow-[0_0_15px_rgba(245,197,99,0.2)] hover:bg-accent/30 transition-all self-end backdrop-blur-xl"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-glass border border-glass-border rounded-full flex items-center justify-center text-secondary hover:text-foreground shadow-lg hover:bg-white/10 transition-all self-end backdrop-blur-xl"
             >
               <Download className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
