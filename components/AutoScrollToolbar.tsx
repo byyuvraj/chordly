@@ -46,10 +46,9 @@ export function AutoScrollToolbar({
         layout
         className="flex items-center gap-1 p-2 rounded-full bg-black/60 border border-white/10 backdrop-blur-2xl shadow-2xl"
       >
-        {tempo && (
-          <>
-            <div className="relative">
-              <Tooltip content={`Metronome (${tempo} BPM)`}>
+        <>
+          <div className="relative">
+            <Tooltip content={`Metronome (${tempo || 120} BPM)`}>
                 <button
                   onClick={toggleMetronome}
                   className={cn(
@@ -77,7 +76,6 @@ export function AutoScrollToolbar({
             </div>
             <div className="w-px h-8 bg-white/10 mx-1" />
           </>
-        )}
 
         <Tooltip content={isPlaying ? "Pause Auto-scroll" : "Start Auto-scroll"}>
           <button
