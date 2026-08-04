@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/icon.png',
-    apple: '/api/icon/192',
+    apple: '/icon-192.png',
   },
 };
 
