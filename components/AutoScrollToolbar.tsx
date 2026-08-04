@@ -38,7 +38,16 @@ export function AutoScrollToolbar({
   songId
 }: AutoScrollToolbarProps) {
   const [showSettings, setShowSettings] = React.useState(false);
-  const { isPlaying: metronomeOn, toggle: toggleMetronome, currentBeat } = useMetronome(tempo);
+  
+  // Local tempo allows the user to adjust the BPM on the fly without editing the song
+  const [localTempo, setLocalTempo] = React.useState(tempo || 120);
+
+  // Sync if the parent changes the tempo
+  React.useEffect(() => {
+    if (tempo) setLocalTempo(tempo);
+  }, [tempo]);
+
+  const { isPlaying: metronomeOn, toggle: toggleMetronome, currentBeat } = useMetronome(localTempo);
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -48,7 +57,7 @@ export function AutoScrollToolbar({
       >
         <>
           <div className="relative">
-            <Tooltip content={`Metronome (${tempo || 120} BPM)`}>
+            <Tooltip content={`Metronome (${localTempo} BPM)`}>
                 <button
                   onClick={toggleMetronome}
                   className={cn(
@@ -171,6 +180,36 @@ export function AutoScrollToolbar({
                     className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors"
                   >
                     <Type size={20} />
+                  </button>
+                </Tooltip>
+              </div>
+            </div>
+
+            <div className="w-full h-px bg-white/10" />
+
+            {/* Metronome Control */}
+            <div>
+              <div className="flex justify-between text-xs text-secondary mb-2 font-medium uppercase tracking-wider">
+                <span>Metronome</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Tooltip content="Decrease BPM">
+                  <button 
+                    onClick={() => setLocalTempo(Math.max(40, localTempo - 5))}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors font-medium text-lg"
+                  >
+                    -
+                  </button>
+                </Tooltip>
+                <div className="flex-1 text-center text-sm font-medium">
+                  {localTempo} BPM
+                </div>
+                <Tooltip content="Increase BPM">
+                  <button 
+                    onClick={() => setLocalTempo(Math.min(240, localTempo + 5))}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10 transition-colors font-medium text-lg"
+                  >
+                    +
                   </button>
                 </Tooltip>
               </div>
