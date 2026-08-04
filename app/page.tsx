@@ -77,7 +77,10 @@ export default function Home() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!installPromptEvent) return;
+    if (!installPromptEvent) {
+      alert("To install Chordly:\n\nAndroid: Tap the 3-dot menu (⋮) and select 'Install app' or 'Add to Home screen'.\n\niOS: Tap the Share button (square with arrow) and select 'Add to Home Screen'.");
+      return;
+    }
     installPromptEvent.prompt();
     const { outcome } = await installPromptEvent.userChoice;
     if (outcome === 'accepted') {
@@ -171,7 +174,6 @@ export default function Home() {
 
       {/* Floating Action Buttons */}
       <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 flex flex-col gap-3 sm:gap-4 z-40">
-        {installPromptEvent && (
           <Tooltip content="Install App">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -182,7 +184,6 @@ export default function Home() {
               <Download className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
           </Tooltip>
-        )}
         <Tooltip content="Metronome">
           <motion.button
             whileHover={{ scale: 1.05 }}
