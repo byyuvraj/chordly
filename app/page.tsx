@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, BookOpen, Activity } from 'lucide-react';
+import { Search, Plus, BookOpen, Activity, Download } from 'lucide-react';
 import { SongCard } from '@/components/SongCard';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ interface SongMeta {
 export default function Home() {
   const [songs, setSongs] = useState<SongMeta[]>([]);
   const [search, setSearch] = useState("");
+  const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
   const router = useRouter();
 
   const loadSongs = async () => {
@@ -62,7 +63,27 @@ export default function Home() {
 
   useEffect(() => {
     loadSongs();
+
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setInstallPromptEvent(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
   }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPromptEvent) return;
+    installPromptEvent.prompt();
+    const { outcome } = await installPromptEvent.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPromptEvent(null);
+    }
+  };
 
   const q = search.toLowerCase().trim();
   
@@ -150,6 +171,18 @@ export default function Home() {
 
       {/* Floating Action Buttons */}
       <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 flex flex-col gap-3 sm:gap-4 z-40">
+        {installPromptEvent && (
+          <Tooltip content="Install App">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleInstallClick}
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/20 border border-accent/50 rounded-full flex items-center justify-center text-accent shadow-[0_0_15px_rgba(245,197,99,0.2)] hover:bg-accent/30 transition-all self-end backdrop-blur-xl"
+            >
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+            </motion.button>
+          </Tooltip>
+        )}
         <Tooltip content="Metronome">
           <motion.button
             whileHover={{ scale: 1.05 }}
