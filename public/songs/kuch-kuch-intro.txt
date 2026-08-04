@@ -19,4 +19,3 @@ G|-----------------------|
 
 # --- LYRICS & CHORDS ---
 # Add your chords in brackets, like [C] or [G]
-[C]Your lyrics go [G]here...
