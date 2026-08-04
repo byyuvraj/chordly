@@ -33,9 +33,9 @@ export function parseChordPro(chordProString: string, transposeStep: number = 0)
   const meta = song.metadata as any;
   const title = (Array.isArray(meta.title) ? meta.title[0] : meta.title) || "Untitled Song";
   const songKey = (Array.isArray(meta.key) ? meta.key[0] : meta.key) || "C";
-  const tempo = (Array.isArray(meta.tempo) ? meta.tempo[0] : meta.tempo) || "120";
-  const strumming = (Array.isArray(meta.strumming) ? meta.strumming[0] : meta.strumming) || "D D U U D U";
-  const time = (Array.isArray(meta.time) ? meta.time[0] : meta.time) || "4/4";
+  const tempo = Array.isArray(meta.tempo) ? meta.tempo[0] : meta.tempo;
+  const strumming = Array.isArray(meta.strumming) ? meta.strumming[0] : meta.strumming;
+  const time = Array.isArray(meta.time) ? meta.time[0] : meta.time;
 
   let inTabBlock = false;
   let currentTabLabel = "Tablature";
