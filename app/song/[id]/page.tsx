@@ -77,7 +77,6 @@ export default function SongViewer({ params }: { params: Promise<{ id: string }>
             </button>
             <div>
               <h1 className="font-bold text-foreground text-lg leading-tight truncate max-w-[200px] sm:max-w-xs">{song.title}</h1>
-              <p className="text-secondary text-xs">{song.artist}</p>
             </div>
           </div>
           

@@ -9,7 +9,6 @@ import { ConfirmModal } from '@/components/ConfirmModal';
 interface SongEntry {
   id: string;
   title: string;
-  artist: string;
   file: string;
   content?: string;
 }
@@ -25,7 +24,6 @@ export default function AdminDashboard() {
   const filteredSongs = songs.filter(song => {
     if (!q) return true;
     return song.title.toLowerCase().includes(q) || 
-           song.artist.toLowerCase().includes(q) ||
            (song.content && song.content.toLowerCase().includes(q));
   });
 
@@ -139,7 +137,7 @@ export default function AdminDashboard() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-foreground placeholder-secondary focus:outline-none focus:border-accent transition-all"
-          placeholder="Search songs by title or artist..."
+          placeholder="Search songs by title..."
         />
       </div>
 
@@ -151,7 +149,6 @@ export default function AdminDashboard() {
             <thead className="bg-black/40 text-secondary text-sm uppercase tracking-wider">
               <tr>
                 <th className="px-4 sm:px-6 py-4 font-medium">Song</th>
-                <th className="hidden sm:table-cell px-6 py-4 font-medium">Artist</th>
                 <th className="px-4 sm:px-6 py-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
@@ -165,9 +162,6 @@ export default function AdminDashboard() {
                       </div>
                       <span className="font-medium text-base sm:text-lg truncate max-w-[150px] sm:max-w-xs">{song.title}</span>
                     </div>
-                  </td>
-                  <td className="hidden sm:table-cell px-6 py-4 text-secondary">
-                    {song.artist}
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 transition-opacity">

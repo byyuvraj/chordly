@@ -10,7 +10,6 @@ import { Tooltip } from '@/components/Tooltip';
 interface SongMeta {
   id: string;
   title: string;
-  artist: string;
   key: string;
   file?: string;
   content?: string; // Lyrics/chords text
@@ -67,21 +66,20 @@ export default function Home() {
 
   const q = search.toLowerCase().trim();
   
-  let titleArtistMatches: SongMeta[] = [];
+  let titleMatches: SongMeta[] = [];
   let lyricsMatches: SongMeta[] = [];
 
   if (!q) {
-    titleArtistMatches = songs;
+    titleMatches = songs;
   } else {
-    titleArtistMatches = songs.filter(s => 
-      s.title.toLowerCase().includes(q) || 
-      s.artist.toLowerCase().includes(q)
+    titleMatches = songs.filter(s => 
+      s.title.toLowerCase().includes(q)
     );
     
-    const titleArtistIds = new Set(titleArtistMatches.map(s => s.id));
+    const titleIds = new Set(titleMatches.map(s => s.id));
     
     lyricsMatches = songs.filter(s => 
-      !titleArtistIds.has(s.id) && 
+      !titleIds.has(s.id) && 
       s.content?.toLowerCase().includes(q)
     );
   }
@@ -106,23 +104,22 @@ export default function Home() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder-secondary focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all shadow-inner"
-          placeholder="Search by title, artist, or lyrics..."
+          placeholder="Search by title..."
         />
       </div>
 
       <div className="flex flex-col gap-6">
-        {titleArtistMatches.length > 0 || lyricsMatches.length > 0 ? (
-          <>
-            {/* Title / Artist Matches */}
-            {titleArtistMatches.length > 0 && (
+        {titleMatches.length > 0 || lyricsMatches.length > 0 ? (
+          <div className="space-y-8 pb-12">
+            {/* Title Matches */}
+            {titleMatches.length > 0 && (
               <div className="flex flex-col gap-4">
-                {q && <h2 className="text-sm font-bold text-secondary uppercase tracking-wider pl-2">Title & Artist Matches</h2>}
-                {titleArtistMatches.map(song => (
+                {q && <h2 className="text-sm font-bold text-secondary uppercase tracking-wider pl-2">Title Matches</h2>}
+                {titleMatches.map(song => (
                   <SongCard
                     key={song.id}
                     id={song.id}
                     title={song.title}
-                    artist={song.artist}
                     songKey={song.key}
                   />
                 ))}
@@ -138,13 +135,12 @@ export default function Home() {
                     key={`lyrics-${song.id}`}
                     id={song.id}
                     title={song.title}
-                    artist={song.artist}
                     songKey={song.key}
                   />
                 ))}
               </div>
             )}
-          </>
+          </div>
         ) : (
           <div className="text-center py-12 text-secondary">
             <p>No songs found matching your search.</p>

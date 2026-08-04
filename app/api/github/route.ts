@@ -3,7 +3,7 @@ import { Octokit } from 'octokit';
 
 export async function POST(request: Request) {
   try {
-    const { id, title, artist, content } = await request.json();
+    const { id, title, content } = await request.json();
 
     if (!process.env.GITHUB_TOKEN) {
       return NextResponse.json({ error: 'GITHUB_TOKEN is not configured in environment variables.' }, { status: 500 });
@@ -36,9 +36,9 @@ export async function POST(request: Request) {
     // Add or update the song in index.json
     const existingIndex = indexJson.findIndex((s: any) => s.id === id);
     if (existingIndex > -1) {
-      indexJson[existingIndex] = { id, title, artist, file: `${id}.txt` };
+      indexJson[existingIndex] = { id, title, file: `${id}.txt` };
     } else {
-      indexJson.push({ id, title, artist, file: `${id}.txt` });
+      indexJson.push({ id, title, file: `${id}.txt` });
     }
 
     // 3. Parallelize getting base tree and creating blobs

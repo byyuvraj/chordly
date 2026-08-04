@@ -33,7 +33,6 @@ G|----------------------|
 
   const [id, setId] = useState(isNew ? '' : unwrappedParams.id);
   const [title, setTitle] = useState('');
-  const [artist, setArtist] = useState('');
   const [content, setContent] = useState(isNew ? defaultTemplate : '');
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -50,15 +49,10 @@ G|----------------------|
         .then(text => {
           let cleanText = text;
           const titleMatch = text.match(/{title:\s*(.*?)}/i);
-          const artistMatch = text.match(/{artist:\s*(.*?)}/i);
 
           if (titleMatch) {
             setTitle(titleMatch[1]);
             cleanText = cleanText.replace(/{title:\s*(.*?)}\n?/i, '');
-          }
-          if (artistMatch) {
-            setArtist(artistMatch[1]);
-            cleanText = cleanText.replace(/{artist:\s*(.*?)}\n?/i, '');
           }
 
           setContent(cleanText.trimStart());
@@ -74,17 +68,17 @@ G|----------------------|
   // Inject metadata for parser preview and safely parse
   const parsedSong = useMemo(() => {
     try {
-      const fullContentForPreview = `{title: ${title || 'Untitled'}}\n{artist: ${artist || 'Unknown Artist'}}\n${content}`;
+      const fullContentForPreview = `{title: ${title || 'Untitled'}}\n${content}`;
       return parseChordPro(fullContentForPreview, 0);
     } catch (e) {
       // If parsing fails (e.g. user is actively typing an unclosed bracket '[C'), just return null
       return null;
     }
-  }, [title, artist, content]);
+  }, [title, content]);
 
   const handleSave = async () => {
-    if (!id || !title || !artist || !content) {
-      setError("Please fill out ID, Title, Artist, and the ChordPro content.");
+    if (!id || !title || !content) {
+      setError("Please fill out ID, Title, and the ChordPro content.");
       return;
     }
 
@@ -93,12 +87,12 @@ G|----------------------|
     setSuccess('');
 
     try {
-      const fullContentToSave = `{title: ${title}}\n{artist: ${artist}}\n${content}`;
+      const fullContentToSave = `{title: ${title}}\n${content}`;
 
       const res = await fetch('/api/github', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, title, artist, content: fullContentToSave })
+        body: JSON.stringify({ id, title, content: fullContentToSave })
       });
 
       const data = await res.json();
@@ -117,9 +111,6 @@ G|----------------------|
       setSaving(false);
     }
   };
-
-  // We no longer need syncDirectives as they are decoupled
-  // and dynamically injected on save/preview.
 
   if (loading) {
     return <div className="p-8 text-secondary">Loading editor...</div>;
@@ -178,16 +169,6 @@ G|----------------------|
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 outline-none focus:border-accent"
               />
             </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs text-secondary mb-1 uppercase tracking-wider">Artist</label>
-              <input
-                type="text"
-                value={artist}
-                onChange={e => setArtist(e.target.value)}
-                placeholder="Artist Name"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 outline-none focus:border-accent"
-              />
-            </div>
           </div>
           <div className="flex-1 p-4 flex flex-col">
             <label className="flex items-center justify-between text-xs text-secondary mb-2 uppercase tracking-wider">
@@ -213,7 +194,6 @@ G|----------------------|
             <div className="max-w-xl mx-auto pb-20">
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold mb-2">{parsedSong.title || 'Untitled'}</h1>
-                <p className="text-secondary text-lg">{parsedSong.artist || 'Unknown Artist'}</p>
 
                 {(parsedSong.key || parsedSong.tempo || parsedSong.time || parsedSong.strumming) && (
                   <div className="mt-6 flex flex-wrap justify-center gap-3">

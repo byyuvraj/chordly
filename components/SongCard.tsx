@@ -9,11 +9,10 @@ import { cn } from '@/lib/utils';
 interface SongCardProps {
   id: string;
   title: string;
-  artist: string;
   songKey: string;
 }
 
-export function SongCard({ id, title, artist, songKey }: SongCardProps) {
+export function SongCard({ id, title, songKey }: SongCardProps) {
   return (
     <Link href={`/song/${id}`}>
       <motion.div
@@ -23,10 +22,6 @@ export function SongCard({ id, title, artist, songKey }: SongCardProps) {
         <div className="flex justify-between items-start mb-2">
           <div>
             <h3 className="text-foreground font-semibold text-lg">{title}</h3>
-            <p className="text-secondary text-sm flex items-center gap-1 mt-1">
-              <Music size={14} />
-              {artist}
-            </p>
           </div>
           
           {songKey && (
